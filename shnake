@@ -46,6 +46,14 @@ declare -a snake_x
 declare -a snake_y
 declare -a food
 
+function graphicsmode {
+    echo -e '\033(0'
+}
+
+function textmode {
+    echo -e '\033(1'
+}
+
 # Echo data on given screen coordinates
 function echoxy {
     echo -e '\033['$2';'$1'H'$3
@@ -58,8 +66,7 @@ function drawborder {
     x1=$3
     y1=$4
 
-    # Change character set
-    echo -e '\033(0'
+    graphicsmode
 
     echoxy $x0 $y0 l
     echoxy $x0 $y1 m
@@ -76,8 +83,7 @@ function drawborder {
         echoxy $x1 $y x
     done
 
-    # Switch back to the regular character set
-    echo -e '\033(1'
+    textmode
 }
 
 # Move the snake one tile on the game area
@@ -100,13 +106,11 @@ function move {
             snake_x[0]=$((${snake_x[0]} - 1)) ;;
     esac
 
-    # Change character set
-    echo -e '\033(0'
+    graphicsmode
 
     echoxy ${snake_x[0]} ${snake_y[0]} a
 
-    # Switch back to the regular character set
-    echo -e '\033(1'
+    textmode
 }
 
 # Place the food at some random position on the game area
@@ -127,13 +131,13 @@ function initsnake {
 
 # Draw the snake
 function putsnake {
-    echo -e '\033(0'
+    graphicsmode
 
     for((i=0; i<$size; i++)); do
         echoxy ${snake_x[$i]} ${snake_y[$i]} a
     done
 
-    echo -e '\033(1'
+    textmode
 }
 
 # Increment snake size by 1
@@ -148,9 +152,9 @@ function growsnake {
     snake_x[0]=${food[0]}
     snake_y[0]=${food[1]}
 
-    echo -e '\033(0'
+    graphicsmode
     echoxy ${snake_x[0]} ${snake_y[0]} a
-    echo -e '\033(1'
+    textmode
 
     putfood
 }
