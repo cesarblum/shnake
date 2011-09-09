@@ -54,6 +54,14 @@ function textmode {
     echo -e '\033(1'
 }
 
+function saveterm {
+    term_settings=$(stty -g)
+}
+
+function restoreterm {
+    stty $term_settings
+}
+
 # Echo data on given screen coordinates
 function echoxy {
     echo -e '\033['$2';'$1'H'$3
@@ -164,7 +172,7 @@ clear
 drawborder $min_x $min_y $max_x $max_y
 
 # Store terminal settings
-term_settings=$(stty -g)
+saveterm
 
 # This is what allows the script to detect keystrokes
 # without requiring the user to press the Enter key
@@ -236,4 +244,4 @@ while(($running)); do
 done
 
 # Restore terminal settings
-stty $term_settings
+restoreterm
