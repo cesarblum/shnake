@@ -215,6 +215,8 @@ while(($running)); do
                 ${snake_y[0]} - 1 == ${food[1]})); then
                 growsnake
                 putfood
+            elif ((${snake_y[0]} == $min_y)); then
+                running=0;
             fi
         ;;
         $right)
@@ -222,6 +224,8 @@ while(($running)); do
                 ${snake_y[0]} == ${food[1]})); then
                 growsnake
                 putfood
+            elif ((${snake_x[0]} == $max_x)); then
+                running=0;
             fi
         ;;
         $down)
@@ -229,6 +233,8 @@ while(($running)); do
                 ${snake_y[0]} + 1 == ${food[1]})); then
                 growsnake
                 putfood
+            elif ((${snake_y[0]} == $max_y)); then
+                running=0;
             fi
         ;;
         $left)
@@ -236,6 +242,8 @@ while(($running)); do
                 ${snake_y[0]} == ${food[1]})); then
                 growsnake
                 putfood
+            elif ((${snake_x[0]} == $min_x)); then
+                running=0;
             fi
         ;;
     esac
