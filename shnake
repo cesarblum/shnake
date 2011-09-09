@@ -1,0 +1,235 @@
+#!/bin/bash
+
+# shnake - classic snake game in bash.
+#
+# Copyright (c) 2011 Cesar L. B. Silveira
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+
+# Move command codes
+UP=1
+DOWN=2
+RIGHT=3
+LEFT=4
+
+# Game area limits
+MINX=4
+MAXX=76
+MINY=4
+MAXY=20
+
+# State data
+RUNNING=1
+DIRECTION=$RIGHT
+SPEED=1
+SIZE=5
+SCORE=0
+
+# The snake itself, and the food "object"
+declare -a SNAKEX
+declare -a SNAKEY
+declare -a FOOD
+
+# Echo data on given screen coordinates
+function echoxy {
+    echo -e '\033['$2';'$1'H'$3
+}
+
+# Draw the game area border
+function drawborder {
+    X0=$1
+    Y0=$2
+    X1=$3
+    Y1=$4
+
+    # Change character set
+    echo -e '\033(0'
+
+    echoxy $X0 $Y0 l
+    echoxy $X0 $Y1 m
+    echoxy $X1 $Y0 k
+    echoxy $X1 $Y1 j
+
+    for ((X=$X0+1; X<$X1; X++)); do
+        echoxy $X $Y0 q
+        echoxy $X $Y1 q
+    done
+
+    for ((Y=$Y0+1; Y<$Y1; Y++)); do
+        echoxy $X0 $Y x
+        echoxy $X1 $Y x
+    done
+
+    # Switch back to the regular character set
+    echo -e '\033(1'
+}
+
+# Move the snake one tile on the game area
+function move {
+    echoxy ${SNAKEX[$(($SIZE - 1))]} ${SNAKEY[$(($SIZE - 1))]} '\040'
+
+    for((i=$SIZE-1; i>0; i--)); do
+        SNAKEX[$i]=${SNAKEX[$i-1]}
+        SNAKEY[$i]=${SNAKEY[$i-1]}
+    done
+
+    case $DIRECTION in
+        $UP)
+            SNAKEY[0]=$((${SNAKEY[0]} - 1)) ;;
+        $RIGHT)
+            SNAKEX[0]=$((${SNAKEX[0]} + 1)) ;;
+        $DOWN)
+            SNAKEY[0]=$((${SNAKEY[0]} + 1)) ;;
+        $LEFT)
+            SNAKEX[0]=$((${SNAKEX[0]} - 1)) ;;
+    esac
+
+    # Change character set
+    echo -e '\033(0'
+
+    echoxy ${SNAKEX[0]} ${SNAKEY[0]} a
+
+    # Switch back to the regular character set
+    echo -e '\033(1'
+}
+
+# Place the food at some random position on the game area
+function putfood {
+    FOOD[0]=$(($MINX + ($RANDOM % ($MAXX - $MINX))))
+    FOOD[1]=$(($MINY + ($RANDOM % ($MAXY - $MINY))))
+
+    echoxy ${FOOD[0]} ${FOOD[1]} '*'
+}
+
+# Initialize the snake
+function initsnake {
+    for((i=$SIZE-1,k=0; i>=0; i--,k++)); do
+        SNAKEX[$i]=$(($MINX + 4 + $k))
+        SNAKEY[$i]=$(($MINY + (($MAXY - $MINY) / 2)))
+    done
+}
+
+# Draw the snake
+function putsnake {
+    echo -e '\033(0'
+
+    for((i=0; i<$SIZE; i++)); do
+        echoxy ${SNAKEX[$i]} ${SNAKEY[$i]} a
+    done
+
+    echo -e '\033(1'
+}
+
+# Increment snake size by 1
+function growsnake {
+    for((i=$SIZE; i>0; i--)); do
+        SNAKEX[$i]=${SNAKEX[$(($i - 1))]}
+        SNAKEY[$i]=${SNAKEY[$(($i - 1))]}
+    done
+
+    SIZE=$(($SIZE + 1))
+
+    SNAKEX[0]=${FOOD[0]}
+    SNAKEY[0]=${FOOD[1]}
+
+    echo -e '\033(0'
+    echoxy ${SNAKEX[0]} ${SNAKEY[0]} a
+    echo -e '\033(1'
+
+    putfood
+}
+
+# "Main"
+clear
+drawborder $MINX $MINY $MAXX $MAXY
+
+# Store terminal settings
+TERM_SETTINGS=$(stty -g)
+
+# This is what allows the script to detect keystrokes
+# without requiring the user to press the Enter key
+stty -icanon min 0 time 0 -echo
+
+# Initialize
+initsnake
+putsnake
+putfood
+
+# Game loop
+while(($RUNNING)); do
+    read key
+
+    case $key in
+        w)
+            if ((DIRECTION == LEFT || DIRECTION == RIGHT)); then
+                DIRECTION=$UP
+            fi
+            ;;
+        a)
+            if ((DIRECTION == UP || DIRECTION == DOWN)); then
+                DIRECTION=$LEFT
+            fi
+            ;;
+        s)
+            if ((DIRECTION == LEFT || DIRECTION == RIGHT)); then
+                DIRECTION=$DOWN
+            fi
+            ;;
+        d)
+            if ((DIRECTION == UP || DIRECTION == DOWN)); then
+                DIRECTION=$RIGHT
+            fi
+            ;;
+        q) RUNNING=0 ;;
+    esac
+
+    move
+
+    case $DIRECTION in
+        $UP)
+            if((${SNAKEX[0]} == ${FOOD[0]} &&
+                ${SNAKEY[0]} - 1 == ${FOOD[1]})); then
+                growsnake
+            fi
+        ;;
+        $RIGHT)
+            if((${SNAKEX[0]} + 1 == ${FOOD[0]} &&
+                ${SNAKEY[0]} == ${FOOD[1]})); then
+                growsnake
+            fi
+        ;;
+        $DOWN)
+            if((${SNAKEX[0]} == ${FOOD[0]} &&
+                ${SNAKEY[0]} + 1 == ${FOOD[1]})); then
+                growsnake
+            fi
+        ;;
+        $LEFT)
+            if((${SNAKEX[0]} - 1 == ${FOOD[0]} &&
+                ${SNAKEY[0]} == ${FOOD[1]})); then
+                growsnake
+            fi
+        ;;
+    esac
+
+    sleep 0.1
+done
+
+# Restore terminal settings
+stty $TERM_SETTINGS
