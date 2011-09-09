@@ -121,8 +121,8 @@ function move {
 
 # Place the food at some random position on the game area
 function putfood {
-    food[0]=$(($min_x + ($RANDOM % ($max_x - $min_x))))
-    food[1]=$(($min_y + ($RANDOM % ($max_y - $min_y))))
+    food[0]=$((1 + $min_x + ($RANDOM % ($max_x - $min_x - 1))))
+    food[1]=$((1 + $min_y + ($RANDOM % ($max_y - $min_y - 1))))
 
     echoxy ${food[0]} ${food[1]} '*'
 }
