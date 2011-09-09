@@ -161,8 +161,6 @@ function growsnake {
     graphicsmode
     echoxy ${snake_x[0]} ${snake_y[0]} a
     textmode
-
-    putfood
 }
 
 # "Main"
@@ -216,24 +214,28 @@ while(($running)); do
             if((${snake_x[0]} == ${food[0]} &&
                 ${snake_y[0]} - 1 == ${food[1]})); then
                 growsnake
+                putfood
             fi
         ;;
         $right)
             if((${snake_x[0]} + 1 == ${food[0]} &&
                 ${snake_y[0]} == ${food[1]})); then
                 growsnake
+                putfood
             fi
         ;;
         $down)
             if((${snake_x[0]} == ${food[0]} &&
                 ${snake_y[0]} + 1 == ${food[1]})); then
                 growsnake
+                putfood
             fi
         ;;
         $left)
             if((${snake_x[0]} - 1 == ${food[0]} &&
                 ${snake_y[0]} == ${food[1]})); then
                 growsnake
+                putfood
             fi
         ;;
     esac
