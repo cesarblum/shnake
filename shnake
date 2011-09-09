@@ -37,9 +37,7 @@ max_y=20
 # State data
 running=1
 direction=$right
-speed=1
 size=5
-score=0
 
 # The snake itself, and the food "object"
 declare -a snake_x
