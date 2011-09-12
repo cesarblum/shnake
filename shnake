@@ -28,11 +28,15 @@ down=2
 right=3
 left=4
 
+# Terminal size
+cols=$(tput cols)
+lines=$(tput lines)
+
 # Game area limits
 min_x=4
-max_x=76
+max_x=$((cols - 4))
 min_y=4
-max_y=20
+max_y=$((lines - 4))
 
 # State data
 running=1
