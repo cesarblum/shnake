@@ -135,8 +135,22 @@ function move {
 
 # Place the food at some random position on the game area
 function putfood {
-    food[0]=$((1 + $min_x + ($RANDOM % ($max_x - $min_x - 1))))
-    food[1]=$((1 + $min_y + ($RANDOM % ($max_y - $min_y - 1))))
+    retry=1
+
+    while [ ! $retry -eq 0 ]; do
+        food[0]=$((1 + $min_x + ($RANDOM % ($max_x - $min_x - 1))))
+        food[1]=$((1 + $min_y + ($RANDOM % ($max_y - $min_y - 1))))
+
+        retry=0
+
+        for((i=0; i<$size; i++)); do
+            if((${food[0]} == ${snake_x[i]} && ${food[1]} == ${snake_y[i]}))
+            then
+                retry=1
+                break
+            fi
+        done
+    done
 
     echoxy ${food[0]} ${food[1]} '*'
 }
