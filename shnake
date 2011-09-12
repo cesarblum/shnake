@@ -94,6 +94,9 @@ function drawborder {
 
 # Move the snake one tile on the game area
 function move {
+    tail_x=${snake_x[$(($size - 1))]}
+    tail_y=${snake_y[$(($size - 1))]}
+
     echoxy ${snake_x[$(($size - 1))]} ${snake_y[$(($size - 1))]} '\040'
 
     for((i=$size-1; i>0; i--)); do
@@ -115,6 +118,17 @@ function move {
     graphicsmode
 
     echoxy ${snake_x[0]} ${snake_y[0]} a
+
+    if((${snake_x[0]} == ${food[0]} && ${snake_y[0]} == ${food[1]})); then
+        snake_x[$size]=$tail_x
+        snake_y[$size]=$tail_y
+        echoxy ${snake_x[$size]} ${snake_y[$size]} a
+        size=$(($size+1))
+        putfood
+    elif((${snake_x[0]} == $min_x || ${snake_x[0]} == $max_x ||
+          ${snake_y[0]} == $min_y || ${snake_y[0]} == $max_y)); then
+        running=0
+    fi
 
     textmode
 }
@@ -143,23 +157,6 @@ function putsnake {
         echoxy ${snake_x[$i]} ${snake_y[$i]} a
     done
 
-    textmode
-}
-
-# Increment snake size by 1
-function growsnake {
-    for((i=$size; i>0; i--)); do
-        snake_x[$i]=${snake_x[$(($i - 1))]}
-        snake_y[$i]=${snake_y[$(($i - 1))]}
-    done
-
-    size=$(($size + 1))
-
-    snake_x[0]=${food[0]}
-    snake_y[0]=${food[1]}
-
-    graphicsmode
-    echoxy ${snake_x[0]} ${snake_y[0]} a
     textmode
 }
 
@@ -208,46 +205,6 @@ while(($running)); do
     esac
 
     move
-
-    case $direction in
-        $up)
-            if((${snake_x[0]} == ${food[0]} &&
-                ${snake_y[0]} - 1 == ${food[1]})); then
-                growsnake
-                putfood
-            elif ((${snake_y[0]} == $min_y)); then
-                running=0;
-            fi
-        ;;
-        $right)
-            if((${snake_x[0]} + 1 == ${food[0]} &&
-                ${snake_y[0]} == ${food[1]})); then
-                growsnake
-                putfood
-            elif ((${snake_x[0]} == $max_x)); then
-                running=0;
-            fi
-        ;;
-        $down)
-            if((${snake_x[0]} == ${food[0]} &&
-                ${snake_y[0]} + 1 == ${food[1]})); then
-                growsnake
-                putfood
-            elif ((${snake_y[0]} == $max_y)); then
-                running=0;
-            fi
-        ;;
-        $left)
-            if((${snake_x[0]} - 1 == ${food[0]} &&
-                ${snake_y[0]} == ${food[1]})); then
-                growsnake
-                putfood
-            elif ((${snake_x[0]} == $min_x)); then
-                running=0;
-            fi
-        ;;
-    esac
-
     sleep 0.1
 done
 
