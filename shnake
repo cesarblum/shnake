@@ -92,8 +92,9 @@ function drawborder {
     textmode
 }
 
-# Move the snake one tile on the game area
-function move {
+# Move the snake one tile on the game area and grow it if necessary, or die
+# on collision with game area border.
+function updatesnake {
     tail_x=${snake_x[$(($size - 1))]}
     tail_y=${snake_y[$(($size - 1))]}
 
@@ -218,7 +219,7 @@ while(($running)); do
         q) running=0 ;;
     esac
 
-    move
+    updatesnake
     sleep 0.1
 done
 
