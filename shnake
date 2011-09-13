@@ -222,3 +222,4 @@ done
 
 # Restore terminal settings
 restoreterm
+clear
