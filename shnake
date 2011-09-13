@@ -83,12 +83,12 @@ function drawborder {
     echoxy $x1 $y0 k
     echoxy $x1 $y1 j
 
-    for ((x=$x0+1; x<$x1; x++)); do
+    for x in $(seq $((x0 + 1)) $((x1 - 1))); do
         echoxy $x $y0 q
         echoxy $x $y1 q
     done
 
-    for ((y=$y0+1; y<$y1; y++)); do
+    for y in $(seq $((y0 + 1)) $((y1 - 1))); do
         echoxy $x0 $y x
         echoxy $x1 $y x
     done
@@ -104,7 +104,7 @@ function updatesnake {
 
     echoxy ${snake_x[$(($size - 1))]} ${snake_y[$(($size - 1))]} '\040'
 
-    for((i=$size-1; i>0; i--)); do
+    for i in $(seq $((size - 1)) 1); do
         snake_x[$i]=${snake_x[$i-1]}
         snake_y[$i]=${snake_y[$i-1]}
     done
@@ -148,7 +148,7 @@ function putfood {
 
         retry=0
 
-        for((i=0; i<$size; i++)); do
+        for i in $(seq 0 $((size - 1))); do
             if [ ${food[0]} -eq ${snake_x[i]} -a ${food[1]} -eq ${snake_y[i]} ]
             then
                 retry=1
@@ -162,8 +162,8 @@ function putfood {
 
 # Initialize the snake
 function initsnake {
-    for((i=$size-1,k=0; i>=0; i--,k++)); do
-        snake_x[$i]=$(($min_x + 4 + $k))
+    for i in $(seq $((size - 1)) 0); do
+        snake_x[$i]=$(($min_x + 4 + (size - 1 - i)))
         snake_y[$i]=$(($min_y + (($max_y - $min_y) / 2)))
     done
 }
@@ -172,7 +172,7 @@ function initsnake {
 function putsnake {
     graphicsmode
 
-    for((i=0; i<$size; i++)); do
+    for i in $(seq 0 $((size - 1))); do
         echoxy ${snake_x[$i]} ${snake_y[$i]} a
     done
 
