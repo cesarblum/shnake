@@ -165,17 +165,12 @@ function initsnake {
         snake_x[$i]=$((min_x + (max_x - min_x) / 2 + i))
         snake_y[$i]=$((min_y + (max_y - min_y) / 2))
     done
-}
 
-# Draw the snake
-function putsnake {
     graphicsmode
 
     for i in $(seq 0 $((size - 1))); do
         echoxy ${snake_x[$i]} ${snake_y[$i]} a
     done
-
-    textmode
 }
 
 # "Main"
@@ -191,7 +186,6 @@ stty -icanon min 0 time 0 -echo
 
 # Initialize
 initsnake
-putsnake
 putfood
 
 # Game loop
