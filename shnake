@@ -196,7 +196,7 @@ putsnake
 putfood
 
 # Game loop
-while(($running)); do
+while [ ! $running -eq 0 ]; do
     read key
 
     case $key in
