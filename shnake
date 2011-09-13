@@ -40,7 +40,7 @@ max_y=$((lines - 4))
 
 # State data
 running=1
-direction=$right
+direction=$left
 size=5
 
 # The snake
@@ -161,9 +161,9 @@ function putfood {
 
 # Initialize the snake
 function initsnake {
-    for i in $(seq $((size - 1)) 0); do
-        snake_x[$i]=$((min_x + 4 + (size - 1 - i)))
-        snake_y[$i]=$((min_y + ((max_y - min_y) / 2)))
+    for i in $(seq 0 $((size - 1))); do
+        snake_x[$i]=$((min_x + (max_x - min_x) / 2 + i))
+        snake_y[$i]=$((min_y + (max_y - min_y) / 2))
     done
 }
 
