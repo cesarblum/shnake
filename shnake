@@ -43,10 +43,9 @@ running=1
 direction=$right
 size=5
 
-# The snake itself, and the food "object"
+# The snake
 declare -a snake_x
 declare -a snake_y
-declare -a food
 
 function graphicsmode {
     echo -e '\033(0'
@@ -124,7 +123,7 @@ function updatesnake {
 
     echoxy ${snake_x[0]} ${snake_y[0]} a
 
-    if [ ${snake_x[0]} -eq ${food[0]} -a ${snake_y[0]} -eq ${food[1]} ]; then
+    if [ ${snake_x[0]} -eq $food_x -a ${snake_y[0]} -eq $food_y ]; then
         snake_x[$size]=$tail_x
         snake_y[$size]=$tail_y
         echoxy ${snake_x[$size]} ${snake_y[$size]} a
@@ -143,13 +142,13 @@ function putfood {
     retry=1
 
     while [ ! $retry -eq 0 ]; do
-        food[0]=$((1 + min_x + (RANDOM % (max_x - min_x - 1))))
-        food[1]=$((1 + min_y + (RANDOM % (max_y - min_y - 1))))
+        food_x=$((1 + min_x + (RANDOM % (max_x - min_x - 1))))
+        food_y=$((1 + min_y + (RANDOM % (max_y - min_y - 1))))
 
         retry=0
 
         for i in $(seq 0 $((size - 1))); do
-            if [ ${food[0]} -eq ${snake_x[i]} -a ${food[1]} -eq ${snake_y[i]} ]
+            if [ $food_x -eq ${snake_x[i]} -a $food_y -eq ${snake_y[i]} ]
             then
                 retry=1
                 break
@@ -157,7 +156,7 @@ function putfood {
         done
     done
 
-    echoxy ${food[0]} ${food[1]} '*'
+    echoxy $food_x $food_y '*'
 }
 
 # Initialize the snake
