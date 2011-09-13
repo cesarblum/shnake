@@ -99,10 +99,10 @@ function drawborder {
 # Move the snake one tile on the game area and grow it if necessary, or die
 # on collision with game area border.
 function updatesnake {
-    tail_x=${snake_x[$(($size - 1))]}
-    tail_y=${snake_y[$(($size - 1))]}
+    tail_x=${snake_x[$((size - 1))]}
+    tail_y=${snake_y[$((size - 1))]}
 
-    echoxy ${snake_x[$(($size - 1))]} ${snake_y[$(($size - 1))]} '\040'
+    echoxy ${snake_x[$((size - 1))]} ${snake_y[$((size - 1))]} '\040'
 
     for i in $(seq $((size - 1)) 1); do
         snake_x[$i]=${snake_x[$i-1]}
@@ -128,7 +128,7 @@ function updatesnake {
         snake_x[$size]=$tail_x
         snake_y[$size]=$tail_y
         echoxy ${snake_x[$size]} ${snake_y[$size]} a
-        size=$(($size+1))
+        size=$((size+1))
         putfood
     elif [ ${snake_x[0]} -eq $min_x -o ${snake_x[0]} -eq $max_x -o \
            ${snake_y[0]} -eq $min_y -o ${snake_y[0]} -eq $max_y ]; then
@@ -143,8 +143,8 @@ function putfood {
     retry=1
 
     while [ ! $retry -eq 0 ]; do
-        food[0]=$((1 + $min_x + ($RANDOM % ($max_x - $min_x - 1))))
-        food[1]=$((1 + $min_y + ($RANDOM % ($max_y - $min_y - 1))))
+        food[0]=$((1 + min_x + (RANDOM % (max_x - min_x - 1))))
+        food[1]=$((1 + min_y + (RANDOM % (max_y - min_y - 1))))
 
         retry=0
 
@@ -163,8 +163,8 @@ function putfood {
 # Initialize the snake
 function initsnake {
     for i in $(seq $((size - 1)) 0); do
-        snake_x[$i]=$(($min_x + 4 + (size - 1 - i)))
-        snake_y[$i]=$(($min_y + (($max_y - $min_y) / 2)))
+        snake_x[$i]=$((min_x + 4 + (size - 1 - i)))
+        snake_y[$i]=$((min_y + ((max_y - min_y) / 2)))
     done
 }
 
