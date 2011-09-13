@@ -124,14 +124,14 @@ function updatesnake {
 
     echoxy ${snake_x[0]} ${snake_y[0]} a
 
-    if((${snake_x[0]} == ${food[0]} && ${snake_y[0]} == ${food[1]})); then
+    if [ ${snake_x[0]} -eq ${food[0]} -a ${snake_y[0]} -eq ${food[1]} ]; then
         snake_x[$size]=$tail_x
         snake_y[$size]=$tail_y
         echoxy ${snake_x[$size]} ${snake_y[$size]} a
         size=$(($size+1))
         putfood
-    elif((${snake_x[0]} == $min_x || ${snake_x[0]} == $max_x ||
-          ${snake_y[0]} == $min_y || ${snake_y[0]} == $max_y)); then
+    elif [ ${snake_x[0]} -eq $min_x -o ${snake_x[0]} -eq $max_x -o \
+           ${snake_y[0]} -eq $min_y -o ${snake_y[0]} -eq $max_y ]; then
         running=0
     fi
 
@@ -149,7 +149,7 @@ function putfood {
         retry=0
 
         for((i=0; i<$size; i++)); do
-            if((${food[0]} == ${snake_x[i]} && ${food[1]} == ${snake_y[i]}))
+            if [ ${food[0]} -eq ${snake_x[i]} -a ${food[1]} -eq ${snake_y[i]} ]
             then
                 retry=1
                 break
@@ -201,22 +201,22 @@ while(($running)); do
 
     case $key in
         w)
-            if ((direction == left || direction == right)); then
+            if [ $direction -eq $left -o $direction -eq $right ]; then
                 direction=$up
             fi
             ;;
         a)
-            if ((direction == up || direction == down)); then
+            if [ $direction -eq $up -o $direction -eq $down ]; then
                 direction=$left
             fi
             ;;
         s)
-            if ((direction == left || direction == right)); then
+            if [ $direction -eq $left -o $direction -eq $right ]; then
                 direction=$down
             fi
             ;;
         d)
-            if ((direction == up || direction == down)); then
+            if [ $direction -eq $up -o $direction -eq $down ]; then
                 direction=$right
             fi
             ;;
