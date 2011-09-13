@@ -22,12 +22,6 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 
-# Move command codes
-up=1
-down=2
-right=3
-left=4
-
 # Terminal size
 cols=$(tput cols)
 lines=$(tput lines)
@@ -40,7 +34,7 @@ max_y=$((lines - 4))
 
 # State data
 running=1
-direction=$left
+direction=LEFT
 size=5
 
 # The snake
@@ -109,13 +103,13 @@ function updatesnake {
     done
 
     case $direction in
-        $up)
+        UP)
             snake_y[0]=$((${snake_y[0]} - 1)) ;;
-        $right)
+        RIGHT)
             snake_x[0]=$((${snake_x[0]} + 1)) ;;
-        $down)
+        DOWN)
             snake_y[0]=$((${snake_y[0]} + 1)) ;;
-        $left)
+        LEFT)
             snake_x[0]=$((${snake_x[0]} - 1)) ;;
     esac
 
@@ -194,23 +188,23 @@ while [ ! $running -eq 0 ]; do
 
     case $key in
         w)
-            if [ $direction -eq $left -o $direction -eq $right ]; then
-                direction=$up
+            if [ $direction == LEFT -o $direction == RIGHT ]; then
+                direction=UP
             fi
             ;;
         a)
-            if [ $direction -eq $up -o $direction -eq $down ]; then
-                direction=$left
+            if [ $direction == UP -o $direction == DOWN ]; then
+                direction=LEFT
             fi
             ;;
         s)
-            if [ $direction -eq $left -o $direction -eq $right ]; then
-                direction=$down
+            if [ $direction == LEFT -o $direction == RIGHT ]; then
+                direction=DOWN
             fi
             ;;
         d)
-            if [ $direction -eq $up -o $direction -eq $down ]; then
-                direction=$right
+            if [ $direction == UP -o $direction == DOWN ]; then
+                direction=RIGHT
             fi
             ;;
         q) running=0 ;;
