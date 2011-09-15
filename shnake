@@ -40,6 +40,8 @@ size=5
 # The snake
 declare -a snake_x
 declare -a snake_y
+declare food_x
+declare food_y
 
 function graphicsmode {
     echo -e '\033(0'
