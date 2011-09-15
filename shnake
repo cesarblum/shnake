@@ -89,6 +89,27 @@ function drawborder {
     textmode
 }
 
+function collisionwithfood {
+    [ ${snake_x[0]} -eq $food_x -a ${snake_y[0]} -eq $food_y ]
+}
+
+function collisionwithborder {
+    [ ${snake_x[0]} -eq $min_x -o ${snake_x[0]} -eq $max_x -o \
+        ${snake_y[0]} -eq $min_y -o ${snake_y[0]} -eq $max_y ]
+}
+
+function collisionwithself {
+    for i in $(seq $((size - 1)) 1); do
+        if [ ${snake_x[0]} -eq ${snake_x[$i]} -a \
+                ${snake_y[0]} -eq ${snake_y[$i]} ]
+        then
+            return 0
+        fi
+    done
+
+    return 1
+}
+
 # Move the snake one tile on the game area and grow it if necessary, or die
 # on collision with game area border.
 function updatesnake {
@@ -117,14 +138,13 @@ function updatesnake {
 
     echoxy ${snake_x[0]} ${snake_y[0]} a
 
-    if [ ${snake_x[0]} -eq $food_x -a ${snake_y[0]} -eq $food_y ]; then
+    if collisionwithfood; then
         snake_x[$size]=$tail_x
         snake_y[$size]=$tail_y
         echoxy ${snake_x[$size]} ${snake_y[$size]} a
         size=$((size+1))
         putfood
-    elif [ ${snake_x[0]} -eq $min_x -o ${snake_x[0]} -eq $max_x -o \
-           ${snake_y[0]} -eq $min_y -o ${snake_y[0]} -eq $max_y ]; then
+    elif collisionwithborder || collisionwithself; then
         running=0
     else
         for i in $(seq $((size - 1)) 1); do
