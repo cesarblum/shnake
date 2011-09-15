@@ -1,6 +1,7 @@
 # Introduction #
 
-shnake is the classic snake game written in Bash.
+shnake is the classic snake game written in Bash
+by Cesar L. B. Silveira <cesarbs _at_ gmail _dot_ com>.
 
 # How to play #
 
