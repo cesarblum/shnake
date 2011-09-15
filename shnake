@@ -126,6 +126,14 @@ function updatesnake {
     elif [ ${snake_x[0]} -eq $min_x -o ${snake_x[0]} -eq $max_x -o \
            ${snake_y[0]} -eq $min_y -o ${snake_y[0]} -eq $max_y ]; then
         running=0
+    else
+        for i in $(seq $((size - 1)) 1); do
+            if [ ${snake_x[0]} -eq ${snake_x[$i]} -a \
+                ${snake_y[0]} -eq ${snake_y[$i]} ]
+            then
+                return 0
+            fi
+        done
     fi
 
     textmode
